@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список Растений</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Список Растений</h1>
+
+    <!-- Форма для поиска растений -->
+    <form action="/plants" method="GET">
+        <input type="text" name="search" placeholder="Поиск по названию или виду">
+        <button type="submit">Поиск</button>
+    </form>
+
+    <!-- Форма для добавления нового растения -->
+    <form action="/plants" method="POST" enctype="multipart/form-data">
+        <label for="name">Название растения:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="species">Вид:</label>
+        <input type="text" id="species" name="species" required>
+
+        <label for="purchase_date">Дата покупки:</label>
+        <input type="date" id="purchase_date" name="purchase_date" required>
+
+        <label for="location">Локация:</label>
+        <input type="text" id="location" name="location" required>
+
+        <label for="image">Изображение растения:</label>
+        <input type="file" id="image" name="image">
+
+        <button type="submit">Добавить растение</button>
+    </form>
+
+    <h2>Список растений:</h2>
+    <ul>
+        {% for plant in plants %}
+            <li>
+                <strong>{{ plant.name }}</strong> ({{ plant.species }}) - {{ plant.purchase_date }} - {{ plant.location }}
+                {% if plant.image_url %}
+                    <img src="{{ url_for('static', filename=plant.image_url) }}" alt="Изображение {{ plant.name }}" style="width:100px;height:auto;">
+                {% endif %}
+                <form action="{{ url_for('main.delete_plant', plant_id=plant.id) }}" method="POST" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
